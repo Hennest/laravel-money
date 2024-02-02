@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
 |--------------------------------------------------------------------------
 | Test Case
@@ -11,7 +13,9 @@
 |
 */
 
-// uses(Tests\TestCase::class)->in('Feature');
+use Hennest\Money\Tests\TestCase;
+
+uses(TestCase::class)->in(__DIR__);
 
 /*
 |--------------------------------------------------------------------------
@@ -24,9 +28,7 @@
 |
 */
 
-expect()->extend('toBeOne', function () {
-    return $this->toBe(1);
-});
+expect()->extend('toBeTwo', fn () => $this->toBe(1));
 
 /*
 |--------------------------------------------------------------------------
@@ -39,7 +41,7 @@ expect()->extend('toBeOne', function () {
 |
 */
 
-function something()
+function something(): void
 {
     // ..
 }
