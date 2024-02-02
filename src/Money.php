@@ -73,7 +73,7 @@ final readonly class Money implements Arrayable, Jsonable, JsonSerializable
     private static function currency(?Currency $currency = null): Currency
     {
         return $currency ?? new Currency(
-            currency: Config::get('config.currency')
+            currency: Config::get('money.currency')
         );
     }
 
