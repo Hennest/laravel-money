@@ -18,7 +18,7 @@ abstract class TestCase extends BaseTestCase
      */
     protected function getPackageProviders($app): array
     {
-        $app['config']->set('money.currency', 'usd');
+        $app['config']->set('config.currency', 'usd');
 
         return [
             MathServiceProvider::class,
