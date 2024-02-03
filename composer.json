@@ -23,7 +23,7 @@
     "require": {
         "php": "^8.2",
         "ext-intl": "*",
-        "akaunting/laravel-money": "^5.1",
+        "akaunting/laravel-money": "^2.1",
         "guzzlehttp/guzzle": "^7.8",
         "hennest/laravel-math": "dev-main"
     },
