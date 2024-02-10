@@ -65,6 +65,22 @@ final readonly class Money implements Arrayable, Jsonable, JsonSerializable
         return new self(self::ZERO, $currency);
     }
 
+    /**
+     * @throws MathException
+     * @throws RoundingNecessaryException
+     */
+    public function negate(): Money
+    {
+        $math = app(MathServiceInterface::class);
+
+        return new self(
+            minorUnit: (int) $math->negate(
+                number: $this->minorUnit,
+            ),
+            currency: $this->currency
+        );
+    }
+
     public function format(): MoneyFormatter
     {
         return new MoneyFormatter($this);
