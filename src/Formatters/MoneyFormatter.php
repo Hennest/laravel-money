@@ -5,8 +5,6 @@ declare(strict_types=1);
 namespace Hennest\Money\Formatters;
 
 use Akaunting\Money\Money as AkauntingMoney;
-use Brick\Math\Exception\MathException;
-use Hennest\Math\Contracts\MathServiceInterface;
 use Hennest\Money\Money;
 use Illuminate\Support\Number;
 
@@ -30,17 +28,6 @@ final readonly class MoneyFormatter
     public function asMajorUnit(): float
     {
         return $this->money->getValue();
-    }
-
-    /**
-     * @throws MathException
-     */
-    public function absolute(): int
-    {
-        $math = app(MathServiceInterface::class);
-
-        return (int) $math->absolute($this->money->getAmount());
-
     }
 
     public function withoutSymbol(): string

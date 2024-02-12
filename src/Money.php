@@ -15,6 +15,9 @@ use Illuminate\Contracts\Support\Jsonable;
 use Illuminate\Support\Facades\Config;
 use JsonSerializable;
 
+/**
+ * @implements Arrayable<string, mixed>
+ */
 final readonly class Money implements Arrayable, Jsonable, JsonSerializable
 {
     private const ZERO = 0;
@@ -27,7 +30,7 @@ final readonly class Money implements Arrayable, Jsonable, JsonSerializable
     {
         $currency = self::currency($currency);
         $money = new AkauntingMoney($minorUnit, $currency);
-        $this->minorUnit = $money->getAmount();
+        $this->minorUnit = (int) $money->getAmount();
         $this->currency = $currency;
     }
 
@@ -48,6 +51,7 @@ final readonly class Money implements Arrayable, Jsonable, JsonSerializable
     public static function majorUnit(float $amount, ?Currency $currency = null): self
     {
         $currency = self::currency($currency);
+        /** @var MathServiceInterface $math */
         $math = app(MathServiceInterface::class);
 
         return new self(
@@ -69,12 +73,29 @@ final readonly class Money implements Arrayable, Jsonable, JsonSerializable
      * @throws MathException
      * @throws RoundingNecessaryException
      */
-    public function negate(): Money
+    public function negate(): self
     {
+        /** @var MathServiceInterface $math */
         $math = app(MathServiceInterface::class);
 
         return new self(
             minorUnit: (int) $math->negate(
+                number: $this->minorUnit,
+            ),
+            currency: $this->currency
+        );
+    }
+
+    /**
+     * @throws MathException
+     */
+    public function absolute(): self
+    {
+        /** @var MathServiceInterface $math */
+        $math = app(MathServiceInterface::class);
+
+        return new self(
+            minorUnit: (int) $math->absolute(
                 number: $this->minorUnit,
             ),
             currency: $this->currency
@@ -88,11 +109,18 @@ final readonly class Money implements Arrayable, Jsonable, JsonSerializable
 
     private static function currency(?Currency $currency = null): Currency
     {
+        /** @var string $configCurrency */
+        $configCurrency = Config::get('money.currency');
+
         return $currency ?? new Currency(
-            currency: Config::get('money.currency')
+            currency: $configCurrency
         );
     }
 
+
+    /**
+     * @return array{minorUnit: int, currency: Currency}
+     */
     public function toArray(): array
     {
         return [
@@ -101,11 +129,14 @@ final readonly class Money implements Arrayable, Jsonable, JsonSerializable
         ];
     }
 
-    public function toJson($options = 0): string
+    public function toJson($options = 0): string|false
     {
         return json_encode($this->toArray(), $options);
     }
 
+    /**
+     * @return array{minorUnit: int, currency: Currency}
+     */
     public function jsonSerialize(): array
     {
         return $this->toArray();

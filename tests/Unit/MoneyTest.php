@@ -26,6 +26,10 @@ it('can be negated', function (): void {
     expect(Money::minorUnit(1000)->negate())->toEqual('-$10.00');
 });
 
+it('can be absolute', function (): void {
+    expect(Money::minorUnit(-1000)->absolute())->toEqual('$10.00');
+});
+
 it('can be formatted', function (): void {
     $money = Money::minorUnit(1000);
 

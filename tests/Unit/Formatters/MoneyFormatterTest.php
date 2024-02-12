@@ -22,14 +22,6 @@ it('can format money as major unit', function (): void {
     expect($formatter->asMajorUnit())->toEqual(10);
 });
 
-it('can format money to absolute value', function (): void {
-    $formatter = new MoneyFormatter(
-        money: new Money(-10_00)
-    );
-
-    expect($formatter->absolute())->toEqual(10_00);
-});
-
 it('can format money without symbol', function (): void {
     $formatter = new MoneyFormatter(
         money: new Money(10_00)
