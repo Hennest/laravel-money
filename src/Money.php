@@ -56,9 +56,11 @@ final readonly class Money implements Arrayable, Jsonable, JsonSerializable
 
         return new self(
             minorUnit: (int) $math->multiply(
-                first: $amount,
+                first: $math->round(
+                    $amount,
+                    precision: $currency->getPrecision()
+                ),
                 second: $currency->getSubunit(),
-                scale: $currency->getPrecision()
             ),
             currency: $currency
         );
