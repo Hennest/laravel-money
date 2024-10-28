@@ -6,9 +6,10 @@ namespace Hennest\Money;
 
 use Akaunting\Money\Currency;
 use Akaunting\Money\Money as AkauntingMoney;
+use Brick\Math\BigDecimal;
 use Brick\Math\Exception\MathException;
 use Brick\Math\Exception\RoundingNecessaryException;
-use Hennest\Math\Contracts\MathServiceInterface;
+use Brick\Math\RoundingMode;
 use Hennest\Money\Formatters\MoneyFormatter;
 use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Contracts\Support\Jsonable;
@@ -51,17 +52,16 @@ final readonly class Money implements Arrayable, Jsonable, JsonSerializable
     public static function majorUnit(float $amount, ?Currency $currency = null): self
     {
         $currency = self::currency($currency);
-        /** @var MathServiceInterface $math */
-        $math = app(MathServiceInterface::class);
 
         return new self(
-            minorUnit: (int) $math->multiply(
-                first: $math->round(
-                    $amount,
-                    precision: $currency->getPrecision()
-                ),
-                second: $currency->getSubunit(),
-            ),
+            minorUnit: BigDecimal::of($amount)
+                ->dividedBy(
+                    that: BigDecimal::one(),
+                    scale: $currency->getPrecision(),
+                    roundingMode: RoundingMode::HALF_UP
+                )
+                ->multipliedBy($currency->getSubunit())
+                ->toInt(),
             currency: $currency
         );
     }
@@ -77,13 +77,8 @@ final readonly class Money implements Arrayable, Jsonable, JsonSerializable
      */
     public function negate(): self
     {
-        /** @var MathServiceInterface $math */
-        $math = app(MathServiceInterface::class);
-
         return new self(
-            minorUnit: (int) $math->negate(
-                number: $this->minorUnit,
-            ),
+            minorUnit: BigDecimal::of($this->minorUnit)->negated()->toInt(),
             currency: $this->currency
         );
     }
@@ -93,13 +88,8 @@ final readonly class Money implements Arrayable, Jsonable, JsonSerializable
      */
     public function absolute(): self
     {
-        /** @var MathServiceInterface $math */
-        $math = app(MathServiceInterface::class);
-
         return new self(
-            minorUnit: (int) $math->absolute(
-                number: $this->minorUnit,
-            ),
+            minorUnit: BigDecimal::of($this->minorUnit)->abs()->toInt(),
             currency: $this->currency
         );
     }

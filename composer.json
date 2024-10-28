@@ -22,8 +22,7 @@
     },
     "require": {
         "php": "^8.2",
-        "akaunting/laravel-money": "^2.1",
-        "hennest/laravel-math": "^0.0"
+        "akaunting/laravel-money": "^2.1"
     },
     "require-dev": {
         "laravel/pint": "^1.13",

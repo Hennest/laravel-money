@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Hennest\Money\Tests;
 
-use Hennest\Math\Providers\MathServiceProvider;
 use Hennest\Money\Providers\MoneyServiceProvider;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\ServiceProvider;
@@ -21,7 +20,6 @@ abstract class TestCase extends BaseTestCase
         $app['config']->set('config.currency', 'usd');
 
         return [
-            MathServiceProvider::class,
             MoneyServiceProvider::class,
         ];
     }
